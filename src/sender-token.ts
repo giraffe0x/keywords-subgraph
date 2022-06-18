@@ -53,3 +53,47 @@ export function handleSenderMint(event: SenderMint): void {
 
   userTokenBalance.save();
 }
+
+export function handleSenderBurn(event: SenderBurn): void {
+  const userId = event.params.from.toHexString()
+  const tokenId = event.params.tokenId.toString();
+  const userTokenBalance = UserTokenBalance.load(`${userId}-${tokenId}`)
+
+  if(!userTokenBalance){
+    return
+  }
+  // update new balance
+  userTokenBalance.balance = userTokenBalance.balance.minus(event.params.amount);
+  userTokenBalance.save();
+}
+
+export function handleSenderTransfer(event: SenderTransfer): void {
+  const userFromId = event.params.from.toHexString();
+  const userToId = event.params.to.toHexString();
+  const tokenId = event.params.id.toString();
+
+  const userFromTokenBalance = UserTokenBalance.load(`${userFromId}-${tokenId}`);
+  let userToTokenBalance = UserTokenBalance.load(`${userToId}-${tokenId}`);
+
+  // return if userFrom does not exist
+  if(!userFromTokenBalance){
+    return
+  }
+
+  // if userTo does not exist, create new
+  if(!userToTokenBalance) {
+    userToTokenBalance = new UserTokenBalance(`${userToId}-${tokenId}`);
+    userToTokenBalance.user = userToId;
+    userToTokenBalance.senderToken = tokenId;
+    userToTokenBalance.balance = event.params.amount;
+  } else {
+    // increase receiver balance
+    userToTokenBalance.balance = userToTokenBalance.balance.plus(event.params.amount);
+  }
+
+  // deduct sender balance
+  userFromTokenBalance.balance = userFromTokenBalance.balance.minus(event.params.amount);
+  
+  userFromTokenBalance.save();
+  userToTokenBalance.save();
+}
