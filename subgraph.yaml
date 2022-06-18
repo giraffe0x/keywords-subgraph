@@ -1,4 +1,4 @@
-specVersion: 0.0.1
+specVersion: 0.0.4
 schema:
   file: ./schema.graphql
 dataSources:
@@ -8,37 +8,23 @@ dataSources:
     source:
       address: "0x3159CAa5903361E2e67724A9aFFd48c3c40AF00f"
       abi: SenderToken
+      startBlock: 12367914
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - ApprovalForAll
-        - OwnershipTransferred
-        - SenderBatchTransfer
-        - SenderBurn
-        - SenderContractChange
-        - SenderInitialMint
-        - SenderInitialVerifiedMint
-        - SenderMint
-        - SenderTransfer
-        - TransferBatch
-        - TransferSingle
-        - URI
+        - SenderToken
+        - User
+        - UserTokenBalance
       abis:
         - name: SenderToken
           file: ./abis/SenderToken.json
       eventHandlers:
-        - event: ApprovalForAll(indexed address,indexed address,bool)
-          handler: handleApprovalForAll
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
         - event: SenderBatchTransfer(indexed address,address,uint256[],uint256[],uint256)
           handler: handleSenderBatchTransfer
         - event: SenderBurn(indexed address,uint256,uint256,uint256)
           handler: handleSenderBurn
-        - event: SenderContractChange(indexed address,address)
-          handler: handleSenderContractChange
         - event: SenderInitialMint(indexed address,uint256,uint256,uint256,string)
           handler: handleSenderInitialMint
         - event: SenderInitialVerifiedMint(indexed address,address,uint256,uint256,uint256,string)
@@ -47,10 +33,4 @@ dataSources:
           handler: handleSenderMint
         - event: SenderTransfer(indexed address,address,uint256,uint256,uint256)
           handler: handleSenderTransfer
-        - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
-          handler: handleTransferBatch
-        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
-          handler: handleTransferSingle
-        - event: URI(string,indexed uint256)
-          handler: handleURI
       file: ./src/sender-token.ts

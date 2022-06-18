@@ -1,0 +1,36 @@
+specVersion: 0.0.4
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum
+    name: SenderToken
+    network: ropsten
+    source:
+      address: "0x3159CAa5903361E2e67724A9aFFd48c3c40AF00f"
+      abi: SenderToken
+      startBlock: 12367914
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - SenderToken
+        - User
+        - UserTokenBalance
+      abis:
+        - name: SenderToken
+          file: SenderToken/abis/SenderToken.json
+      eventHandlers:
+        - event: SenderBatchTransfer(indexed address,address,uint256[],uint256[],uint256)
+          handler: handleSenderBatchTransfer
+        - event: SenderBurn(indexed address,uint256,uint256,uint256)
+          handler: handleSenderBurn
+        - event: SenderInitialMint(indexed address,uint256,uint256,uint256,string)
+          handler: handleSenderInitialMint
+        - event: SenderInitialVerifiedMint(indexed address,address,uint256,uint256,uint256,string)
+          handler: handleSenderInitialVerifiedMint
+        - event: SenderMint(indexed address,uint256,uint256,uint256)
+          handler: handleSenderMint
+        - event: SenderTransfer(indexed address,address,uint256,uint256,uint256)
+          handler: handleSenderTransfer
+      file: SenderToken/SenderToken.wasm
