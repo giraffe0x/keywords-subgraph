@@ -62,4 +62,29 @@ dataSources:
         - event: ReceiverTransfer(indexed address,address,uint256,uint256,uint256)
           handler: handleReceiverTransfer
       file: ./src/receiver-token.ts
-
+  - kind: ethereum
+    name: Messenger
+    network: ropsten
+    source:
+      address: "0x3c3B0Fe25ADA3a0e6f62a38Bc479BC1201446B50"
+      abi: Messenger
+      startBlock: 12369578
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - SenderToken
+        - User
+        - UserTokenBalance
+        - Message
+        - Reply
+      abis:
+        - name: Messenger
+          file: ./abis/Messenger.json
+      eventHandlers:
+        - event: NewMessage(indexed address,uint256,uint256,string)
+          handler: handleNewMessage
+        - event: NewReply(indexed address,uint256,uint256,string)
+          handler: handleNewReply
+      file: ./src/messenger.ts

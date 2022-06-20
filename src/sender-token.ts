@@ -8,7 +8,7 @@ import {
 } from "../generated/SenderToken/SenderToken"
 
 import { SenderToken, User, UserTokenBalance } from "../generated/schema"
-import { BigInt, bigInt } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 
 export function handleSenderInitialVerifiedMint(event: SenderInitialVerifiedMint): void {
   const userId = event.params.to.toHexString()
@@ -16,7 +16,7 @@ export function handleSenderInitialVerifiedMint(event: SenderInitialVerifiedMint
 
   const userTokenBalance = new UserTokenBalance(`${userId}-${tokenId}`);
   userTokenBalance.user = userId;
-  userTokenBalance.senderToken = tokenId;
+  userTokenBalance.tokenId = tokenId;
   // userTokenBalance.receiverToken = tokenId;
   userTokenBalance.senderTokenBalance = event.params.amount;
   userTokenBalance.receiverTokenBalance = BigInt.fromI32(1);
@@ -31,7 +31,7 @@ export function handleSenderInitialVerifiedMint(event: SenderInitialVerifiedMint
   let senderToken = SenderToken.load(tokenId)
   if(!senderToken) {
     senderToken = new SenderToken(tokenId);
-    senderToken.tokenID = event.params.tokenId;
+    senderToken.tokenId = event.params.tokenId;
     senderToken.keyword = event.params.keyword;
     senderToken.save();
   }
@@ -85,7 +85,7 @@ export function handleSenderTransfer(event: SenderTransfer): void {
     userToTokenBalance = new UserTokenBalance(`${userToId}-${tokenId}`);
 
     userToTokenBalance.user = userToId;
-    userToTokenBalance.senderToken = tokenId;
+    userToTokenBalance.tokenId = tokenId;
     userToTokenBalance.senderTokenBalance = event.params.amount;
   } else {
     // increase receiver balance

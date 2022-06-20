@@ -1,20 +1,37 @@
 type SenderToken @entity {
   id: ID!
-  tokenID: BigInt!
+  tokenId: BigInt!
   keyword: String!
-  UserTokenBalances: [UserTokenBalance!] @derivedFrom(field: "senderToken")
+  UserTokenBalances: [UserTokenBalance!] @derivedFrom(field: "tokenId")
 }
 
 type User @entity {
   id: ID!
   UserTokenBalances: [UserTokenBalance!] @derivedFrom(field: "user")
+  messages: [Message!] @derivedFrom(field: "from")
+  replies: [Reply!] @derivedFrom(field: "from")
 }
 
 type UserTokenBalance @entity {
   id: ID! # Set to `${user.id}-${senderToken.id}`
   user: User!
-  senderToken: SenderToken!
+  tokenId: SenderToken!
   senderTokenBalance: BigInt!
   receiverTokenBalance: BigInt!
 }
 
+type Message @entity {
+  id: ID!
+  from: User!
+  timestamp: String!
+  content: String!
+  replies: [Reply!] @derivedFrom(field: "belongsTo")
+}
+
+type Reply @entity {
+  id: ID!
+  from: User!
+  timestamp: String!
+  content: String!
+  belongsTo: Message!
+}

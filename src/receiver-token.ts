@@ -8,7 +8,7 @@ import {
 } from "../generated/ReceiverToken/ReceiverToken"
 
 import { User, UserTokenBalance } from "../generated/schema"
-import { BigInt, bigInt } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 
 // export function handleReceiverInitialMint(event: ReceiverInitialMint): void {
 //   const userId = event.params.to.toHexString()
@@ -45,7 +45,7 @@ export function handleReceiverMint(event: ReceiverMint): void {
   if (!userTokenBalance) {
     userTokenBalance = new UserTokenBalance(`${userId}-${tokenId}`);
     userTokenBalance.user = userId;
-    userTokenBalance.senderToken = tokenId;
+    userTokenBalance.tokenId = tokenId;
     userTokenBalance.senderTokenBalance = BigInt.fromI32(0);
     userTokenBalance.receiverTokenBalance = BigInt.fromI32(0);
   }
@@ -131,7 +131,7 @@ export function handleReceiverTransfer(event: ReceiverTransfer): void {
   if(!userToTokenBalance) {
     userToTokenBalance = new UserTokenBalance(`${userToId}-${tokenId}`);
     userToTokenBalance.user = userToId;
-    userToTokenBalance.senderToken = tokenId;
+    userToTokenBalance.tokenId = tokenId;
     userToTokenBalance.receiverTokenBalance = BigInt.fromI32(0);
     userToTokenBalance.receiverTokenBalance = BigInt.fromI32(0);
   }
