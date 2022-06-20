@@ -14,5 +14,7 @@ type UserTokenBalance @entity {
   id: ID! # Set to `${user.id}-${senderToken.id}`
   user: User!
   senderToken: SenderToken!
-  balance: BigInt!
+  senderTokenBalance: BigInt!
+  receiverTokenBalance: BigInt!
 }
+

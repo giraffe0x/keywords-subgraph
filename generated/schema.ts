@@ -184,12 +184,21 @@ export class UserTokenBalance extends Entity {
     this.set("senderToken", Value.fromString(value));
   }
 
-  get balance(): BigInt {
-    let value = this.get("balance");
+  get senderTokenBalance(): BigInt {
+    let value = this.get("senderTokenBalance");
     return value!.toBigInt();
   }
 
-  set balance(value: BigInt) {
-    this.set("balance", Value.fromBigInt(value));
+  set senderTokenBalance(value: BigInt) {
+    this.set("senderTokenBalance", Value.fromBigInt(value));
+  }
+
+  get receiverTokenBalance(): BigInt {
+    let value = this.get("receiverTokenBalance");
+    return value!.toBigInt();
+  }
+
+  set receiverTokenBalance(value: BigInt) {
+    this.set("receiverTokenBalance", Value.fromBigInt(value));
   }
 }

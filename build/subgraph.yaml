@@ -21,12 +21,8 @@ dataSources:
         - name: SenderToken
           file: SenderToken/abis/SenderToken.json
       eventHandlers:
-        - event: SenderBatchTransfer(indexed address,address,uint256[],uint256[],uint256)
-          handler: handleSenderBatchTransfer
         - event: SenderBurn(indexed address,uint256,uint256,uint256)
           handler: handleSenderBurn
-        - event: SenderInitialMint(indexed address,uint256,uint256,uint256,string)
-          handler: handleSenderInitialMint
         - event: SenderInitialVerifiedMint(indexed address,address,uint256,uint256,uint256,string)
           handler: handleSenderInitialVerifiedMint
         - event: SenderMint(indexed address,uint256,uint256,uint256)
@@ -34,3 +30,29 @@ dataSources:
         - event: SenderTransfer(indexed address,address,uint256,uint256,uint256)
           handler: handleSenderTransfer
       file: SenderToken/SenderToken.wasm
+  - kind: ethereum
+    name: ReceiverToken
+    network: ropsten
+    source:
+      address: "0xE5d54cA63c5EF79ad3313E77E9A9da0b66F32ed0"
+      abi: ReceiverToken
+      startBlock: 12367938
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - SenderToken
+        - User
+        - UserTokenBalance
+      abis:
+        - name: ReceiverToken
+          file: ReceiverToken/abis/ReceiverToken.json
+      eventHandlers:
+        - event: ReceiverBurn(indexed address,uint256,uint256,uint256)
+          handler: handleReceiverBurn
+        - event: ReceiverMint(indexed address,uint256,uint256,uint256)
+          handler: handleReceiverMint
+        - event: ReceiverTransfer(indexed address,address,uint256,uint256,uint256)
+          handler: handleReceiverTransfer
+      file: ReceiverToken/ReceiverToken.wasm

@@ -1,13 +1,14 @@
 import {
-  SenderBatchTransfer,
+  // SenderBatchTransfer,
   SenderBurn,
-  SenderInitialMint,
+  // SenderInitialMint,
   SenderInitialVerifiedMint,
   SenderMint,
   SenderTransfer
 } from "../generated/SenderToken/SenderToken"
 
 import { SenderToken, User, UserTokenBalance } from "../generated/schema"
+import { BigInt, bigInt } from "@graphprotocol/graph-ts";
 
 export function handleSenderInitialVerifiedMint(event: SenderInitialVerifiedMint): void {
   const userId = event.params.to.toHexString()
@@ -16,7 +17,9 @@ export function handleSenderInitialVerifiedMint(event: SenderInitialVerifiedMint
   const userTokenBalance = new UserTokenBalance(`${userId}-${tokenId}`);
   userTokenBalance.user = userId;
   userTokenBalance.senderToken = tokenId;
-  userTokenBalance.balance = event.params.amount;
+  // userTokenBalance.receiverToken = tokenId;
+  userTokenBalance.senderTokenBalance = event.params.amount;
+  userTokenBalance.receiverTokenBalance = BigInt.fromI32(1);
   userTokenBalance.save();
 
   let user = User.load(userId);
@@ -25,12 +28,12 @@ export function handleSenderInitialVerifiedMint(event: SenderInitialVerifiedMint
     user.save();
   }
 
-  let token = SenderToken.load(tokenId)
-  if(!token) {
-    token = new SenderToken(tokenId);
-    token.tokenID = event.params.tokenId;
-    token.keyword = event.params.keyword;
-    token.save();
+  let senderToken = SenderToken.load(tokenId)
+  if(!senderToken) {
+    senderToken = new SenderToken(tokenId);
+    senderToken.tokenID = event.params.tokenId;
+    senderToken.keyword = event.params.keyword;
+    senderToken.save();
   }
 }
 
@@ -40,16 +43,12 @@ export function handleSenderMint(event: SenderMint): void {
   const tokenId = event.params.tokenId.toString();
   let userTokenBalance = UserTokenBalance.load(`${userId}-${tokenId}`)
 
-  // create if does not exist
+  // return if does not exist
   if (!userTokenBalance) {
-    userTokenBalance = new UserTokenBalance(`${userId}-${tokenId}`);
-    userTokenBalance.user = userId;
-    userTokenBalance.senderToken = tokenId;
-    userTokenBalance.balance = event.params.amount;
-  } else {
-    // update new balance
-    userTokenBalance.balance = userTokenBalance.balance.plus(event.params.amount);
+    return
   }
+  // update new balance
+  userTokenBalance.senderTokenBalance = userTokenBalance.senderTokenBalance.plus(event.params.amount);
 
   userTokenBalance.save();
 }
@@ -63,7 +62,8 @@ export function handleSenderBurn(event: SenderBurn): void {
     return
   }
   // update new balance
-  userTokenBalance.balance = userTokenBalance.balance.minus(event.params.amount);
+  userTokenBalance.senderTokenBalance = userTokenBalance.senderTokenBalance.minus(event.params.amount);
+
   userTokenBalance.save();
 }
 
@@ -83,17 +83,18 @@ export function handleSenderTransfer(event: SenderTransfer): void {
   // if userTo does not exist, create new
   if(!userToTokenBalance) {
     userToTokenBalance = new UserTokenBalance(`${userToId}-${tokenId}`);
+
     userToTokenBalance.user = userToId;
     userToTokenBalance.senderToken = tokenId;
-    userToTokenBalance.balance = event.params.amount;
+    userToTokenBalance.senderTokenBalance = event.params.amount;
   } else {
     // increase receiver balance
-    userToTokenBalance.balance = userToTokenBalance.balance.plus(event.params.amount);
+    userToTokenBalance.senderTokenBalance = userToTokenBalance.senderTokenBalance.plus(event.params.amount);
   }
 
   // deduct sender balance
-  userFromTokenBalance.balance = userFromTokenBalance.balance.minus(event.params.amount);
-  
+  userFromTokenBalance.senderTokenBalance = userFromTokenBalance.senderTokenBalance.minus(event.params.amount);
+
   userFromTokenBalance.save();
   userToTokenBalance.save();
 }
