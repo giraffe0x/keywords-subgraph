@@ -17,7 +17,6 @@ export function handleSenderInitialVerifiedMint(event: SenderInitialVerifiedMint
   const userTokenBalance = new UserTokenBalance(`${userId}-${tokenId}`);
   userTokenBalance.user = userId;
   userTokenBalance.tokenId = tokenId;
-  // userTokenBalance.receiverToken = tokenId;
   userTokenBalance.senderTokenBalance = event.params.amount;
   userTokenBalance.receiverTokenBalance = BigInt.fromI32(1);
   userTokenBalance.save();
@@ -33,6 +32,8 @@ export function handleSenderInitialVerifiedMint(event: SenderInitialVerifiedMint
     senderToken = new SenderToken(tokenId);
     senderToken.tokenId = event.params.tokenId;
     senderToken.keyword = event.params.keyword;
+    senderToken.isVerified = true;
+    senderToken.contract = event.params.contract_addr.toHexString();
     senderToken.save();
   }
 }

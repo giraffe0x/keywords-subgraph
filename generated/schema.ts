@@ -60,8 +60,51 @@ export class SenderToken extends Entity {
     this.set("keyword", Value.fromString(value));
   }
 
-  get UserTokenBalances(): Array<string> | null {
-    let value = this.get("UserTokenBalances");
+  get isVerified(): boolean {
+    let value = this.get("isVerified");
+    return value!.toBoolean();
+  }
+
+  set isVerified(value: boolean) {
+    this.set("isVerified", Value.fromBoolean(value));
+  }
+
+  get contract(): string | null {
+    let value = this.get("contract");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set contract(value: string | null) {
+    if (!value) {
+      this.unset("contract");
+    } else {
+      this.set("contract", Value.fromString(<string>value));
+    }
+  }
+
+  get profilePic(): string | null {
+    let value = this.get("profilePic");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set profilePic(value: string | null) {
+    if (!value) {
+      this.unset("profilePic");
+    } else {
+      this.set("profilePic", Value.fromString(<string>value));
+    }
+  }
+
+  get userTokenBalances(): Array<string> | null {
+    let value = this.get("userTokenBalances");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -69,14 +112,31 @@ export class SenderToken extends Entity {
     }
   }
 
-  set UserTokenBalances(value: Array<string> | null) {
+  set userTokenBalances(value: Array<string> | null) {
     if (!value) {
-      this.unset("UserTokenBalances");
+      this.unset("userTokenBalances");
     } else {
       this.set(
-        "UserTokenBalances",
+        "userTokenBalances",
         Value.fromStringArray(<Array<string>>value)
       );
+    }
+  }
+
+  get messages(): Array<string> | null {
+    let value = this.get("messages");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set messages(value: Array<string> | null) {
+    if (!value) {
+      this.unset("messages");
+    } else {
+      this.set("messages", Value.fromStringArray(<Array<string>>value));
     }
   }
 }
@@ -112,8 +172,8 @@ export class User extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get UserTokenBalances(): Array<string> | null {
-    let value = this.get("UserTokenBalances");
+  get userTokenBalances(): Array<string> | null {
+    let value = this.get("userTokenBalances");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -121,12 +181,12 @@ export class User extends Entity {
     }
   }
 
-  set UserTokenBalances(value: Array<string> | null) {
+  set userTokenBalances(value: Array<string> | null) {
     if (!value) {
-      this.unset("UserTokenBalances");
+      this.unset("userTokenBalances");
     } else {
       this.set(
-        "UserTokenBalances",
+        "userTokenBalances",
         Value.fromStringArray(<Array<string>>value)
       );
     }
@@ -275,6 +335,15 @@ export class Message extends Entity {
 
   set from(value: string) {
     this.set("from", Value.fromString(value));
+  }
+
+  get tokenId(): string {
+    let value = this.get("tokenId");
+    return value!.toString();
+  }
+
+  set tokenId(value: string) {
+    this.set("tokenId", Value.fromString(value));
   }
 
   get timestamp(): string {

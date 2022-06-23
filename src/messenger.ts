@@ -13,6 +13,7 @@ export function handleNewMessage(event: NewMessage): void {
 
   const message = new Message(`${userId}-${tokenId}-${timestamp}`);
   message.from = userId;
+  message.tokenId = tokenId;
   message.timestamp = timestamp;
   message.content = event.params.message;
 

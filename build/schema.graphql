@@ -2,12 +2,16 @@ type SenderToken @entity {
   id: ID!
   tokenId: BigInt!
   keyword: String!
-  UserTokenBalances: [UserTokenBalance!] @derivedFrom(field: "tokenId")
+  isVerified: Boolean!
+  contract: String
+  profilePic: String
+  userTokenBalances: [UserTokenBalance!] @derivedFrom(field: "tokenId")
+  messages: [Message!] @derivedFrom(field: "tokenId")
 }
 
 type User @entity {
   id: ID!
-  UserTokenBalances: [UserTokenBalance!] @derivedFrom(field: "user")
+  userTokenBalances: [UserTokenBalance!] @derivedFrom(field: "user")
   messages: [Message!] @derivedFrom(field: "from")
   replies: [Reply!] @derivedFrom(field: "from")
 }
@@ -23,6 +27,7 @@ type UserTokenBalance @entity {
 type Message @entity {
   id: ID!
   from: User!
+  tokenId: SenderToken!
   timestamp: String!
   content: String!
   replies: [Reply!] @derivedFrom(field: "belongsTo")
