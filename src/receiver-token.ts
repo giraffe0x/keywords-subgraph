@@ -7,7 +7,7 @@ import {
   // ReceiverInitialMint
 } from "../generated/ReceiverToken/ReceiverToken"
 
-import { User, UserTokenBalance } from "../generated/schema"
+import { User, UserTokenBalance, SenderToken } from "../generated/schema"
 import { BigInt } from "@graphprotocol/graph-ts";
 
 // export function handleReceiverInitialMint(event: ReceiverInitialMint): void {
@@ -31,17 +31,19 @@ import { BigInt } from "@graphprotocol/graph-ts";
 // }
 
 export function handleReceiverMint(event: ReceiverMint): void {
-  const userId = event.params.to.toHexString()
+  const userId = event.params.to.toHexString();
   const tokenId = event.params.tokenId.toString();
+  let senderToken = SenderToken.load(tokenId);
+  let userTokenBalance = UserTokenBalance.load(`${userId}-${tokenId}`);
 
-  // return if token does not exist - should have been created with sender mint
-  // let token = ReceiverToken.load(tokenId)
-  // if(!token) {
-  //   return
-  // }
+  if (!senderToken) {
+    return;
+  }
 
-  let userTokenBalance = UserTokenBalance.load(`${userId}-${tokenId}`)
-  // create user token balance entity if does not exist
+  senderToken.receiverTokenSupply = senderToken.receiverTokenSupply + event.params.amount.toI32();
+  senderToken.save();
+
+   // create user token balance entity if does not exist
   if (!userTokenBalance) {
     userTokenBalance = new UserTokenBalance(`${userId}-${tokenId}`);
     userTokenBalance.user = userId;
@@ -99,15 +101,19 @@ export function handleReceiverMint(event: ReceiverMint): void {
 export function handleReceiverBurn(event: ReceiverBurn): void {
   const userId = event.params.from.toHexString()
   const tokenId = event.params.tokenId.toString();
-  const userTokenBalance = UserTokenBalance.load(`${userId}-${tokenId}`)
+  let senderToken = SenderToken.load(tokenId);
+  let userTokenBalance = UserTokenBalance.load(`${userId}-${tokenId}`)
 
-  if(!userTokenBalance){
+  if(!senderToken || !userTokenBalance){
     return
   }
 
   // update new balance
+  senderToken.receiverTokenSupply = senderToken.receiverTokenSupply - event.params.amount.toI32();
+
   userTokenBalance.receiverTokenBalance = userTokenBalance.receiverTokenBalance.minus(event.params.amount);
 
+  senderToken.save();
   userTokenBalance.save();
 }
 

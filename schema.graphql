@@ -4,6 +4,8 @@ type SenderToken @entity {
   keyword: String!
   isVerified: Boolean!
   contract: String
+  senderTokenSupply: Int!
+  receiverTokenSupply: Int!
   profilePic: String
   userTokenBalances: [UserTokenBalance!] @derivedFrom(field: "tokenId")
   messages: [Message!] @derivedFrom(field: "tokenId")

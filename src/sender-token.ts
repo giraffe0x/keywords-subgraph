@@ -34,6 +34,8 @@ export function handleSenderInitialVerifiedMint(event: SenderInitialVerifiedMint
     senderToken.keyword = event.params.keyword;
     senderToken.isVerified = true;
     senderToken.contract = event.params.contract_addr.toHexString();
+    senderToken.senderTokenSupply = event.params.amount.toI32();
+    senderToken.receiverTokenSupply = 1;
     senderToken.save();
   }
 }
@@ -42,29 +44,37 @@ export function handleSenderInitialVerifiedMint(event: SenderInitialVerifiedMint
 export function handleSenderMint(event: SenderMint): void {
   const userId = event.params.to.toHexString()
   const tokenId = event.params.tokenId.toString();
+  let senderToken = SenderToken.load(tokenId)
   let userTokenBalance = UserTokenBalance.load(`${userId}-${tokenId}`)
 
   // return if does not exist
-  if (!userTokenBalance) {
+  if (!senderToken || !userTokenBalance) {
     return
   }
   // update new balance
   userTokenBalance.senderTokenBalance = userTokenBalance.senderTokenBalance.plus(event.params.amount);
 
+  senderToken.senderTokenSupply = senderToken.senderTokenSupply + event.params.amount.toI32();
+
+  senderToken.save();
   userTokenBalance.save();
 }
 
 export function handleSenderBurn(event: SenderBurn): void {
   const userId = event.params.from.toHexString()
   const tokenId = event.params.tokenId.toString();
-  const userTokenBalance = UserTokenBalance.load(`${userId}-${tokenId}`)
+  let senderToken = SenderToken.load(tokenId)
+  let userTokenBalance = UserTokenBalance.load(`${userId}-${tokenId}`)
 
-  if(!userTokenBalance){
+  if(!senderToken || !userTokenBalance){
     return
   }
   // update new balance
   userTokenBalance.senderTokenBalance = userTokenBalance.senderTokenBalance.minus(event.params.amount);
 
+  senderToken.senderTokenSupply = senderToken.senderTokenSupply - event.params.amount.toI32();
+
+  senderToken.save();
   userTokenBalance.save();
 }
 

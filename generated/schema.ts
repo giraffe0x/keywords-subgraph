@@ -86,6 +86,24 @@ export class SenderToken extends Entity {
     }
   }
 
+  get senderTokenSupply(): i32 {
+    let value = this.get("senderTokenSupply");
+    return value!.toI32();
+  }
+
+  set senderTokenSupply(value: i32) {
+    this.set("senderTokenSupply", Value.fromI32(value));
+  }
+
+  get receiverTokenSupply(): i32 {
+    let value = this.get("receiverTokenSupply");
+    return value!.toI32();
+  }
+
+  set receiverTokenSupply(value: i32) {
+    this.set("receiverTokenSupply", Value.fromI32(value));
+  }
+
   get profilePic(): string | null {
     let value = this.get("profilePic");
     if (!value || value.kind == ValueKind.NULL) {
