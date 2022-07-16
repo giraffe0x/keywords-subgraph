@@ -254,28 +254,6 @@ export class ReceiverTransfer__Params {
   }
 }
 
-export class SenderContractChange extends ethereum.Event {
-  get params(): SenderContractChange__Params {
-    return new SenderContractChange__Params(this);
-  }
-}
-
-export class SenderContractChange__Params {
-  _event: SenderContractChange;
-
-  constructor(event: SenderContractChange) {
-    this._event = event;
-  }
-
-  get from(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
-  get to(): Address {
-    return this._event.parameters[1].value.toAddress();
-  }
-}
-
 export class TransferBatch extends ethereum.Event {
   get params(): TransferBatch__Params {
     return new TransferBatch__Params(this);
@@ -371,16 +349,20 @@ export class ReceiverToken extends ethereum.SmartContract {
     return new ReceiverToken("ReceiverToken", address);
   }
 
-  SenderContract(): Address {
-    let result = super.call("SenderContract", "SenderContract():(address)", []);
+  RelayerContract(): Address {
+    let result = super.call(
+      "RelayerContract",
+      "RelayerContract():(address)",
+      []
+    );
 
     return result[0].toAddress();
   }
 
-  try_SenderContract(): ethereum.CallResult<Address> {
+  try_RelayerContract(): ethereum.CallResult<Address> {
     let result = super.tryCall(
-      "SenderContract",
-      "SenderContract():(address)",
+      "RelayerContract",
+      "RelayerContract():(address)",
       []
     );
     if (result.reverted) {
@@ -610,17 +592,17 @@ export class ReceiverToken extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  uri(tokenId: BigInt): string {
+  uri(param0: BigInt): string {
     let result = super.call("uri", "uri(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(tokenId)
+      ethereum.Value.fromUnsignedBigInt(param0)
     ]);
 
     return result[0].toString();
   }
 
-  try_uri(tokenId: BigInt): ethereum.CallResult<string> {
+  try_uri(param0: BigInt): ethereum.CallResult<string> {
     let result = super.tryCall("uri", "uri(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(tokenId)
+      ethereum.Value.fromUnsignedBigInt(param0)
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -816,6 +798,44 @@ export class MintReceiverCall__Outputs {
   }
 }
 
+export class RelayedMintReceiverCall extends ethereum.Call {
+  get inputs(): RelayedMintReceiverCall__Inputs {
+    return new RelayedMintReceiverCall__Inputs(this);
+  }
+
+  get outputs(): RelayedMintReceiverCall__Outputs {
+    return new RelayedMintReceiverCall__Outputs(this);
+  }
+}
+
+export class RelayedMintReceiverCall__Inputs {
+  _call: RelayedMintReceiverCall;
+
+  constructor(call: RelayedMintReceiverCall) {
+    this._call = call;
+  }
+
+  get to(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
+  get amount(): BigInt {
+    return this._call.inputValues[2].value.toBigInt();
+  }
+}
+
+export class RelayedMintReceiverCall__Outputs {
+  _call: RelayedMintReceiverCall;
+
+  constructor(call: RelayedMintReceiverCall) {
+    this._call = call;
+  }
+}
+
 export class RenounceOwnershipCall extends ethereum.Call {
   get inputs(): RenounceOwnershipCall__Inputs {
     return new RenounceOwnershipCall__Inputs(this);
@@ -968,20 +988,20 @@ export class SetApprovalForAllCall__Outputs {
   }
 }
 
-export class SetSenderContractAddressCall extends ethereum.Call {
-  get inputs(): SetSenderContractAddressCall__Inputs {
-    return new SetSenderContractAddressCall__Inputs(this);
+export class SetRelayerContractAddressCall extends ethereum.Call {
+  get inputs(): SetRelayerContractAddressCall__Inputs {
+    return new SetRelayerContractAddressCall__Inputs(this);
   }
 
-  get outputs(): SetSenderContractAddressCall__Outputs {
-    return new SetSenderContractAddressCall__Outputs(this);
+  get outputs(): SetRelayerContractAddressCall__Outputs {
+    return new SetRelayerContractAddressCall__Outputs(this);
   }
 }
 
-export class SetSenderContractAddressCall__Inputs {
-  _call: SetSenderContractAddressCall;
+export class SetRelayerContractAddressCall__Inputs {
+  _call: SetRelayerContractAddressCall;
 
-  constructor(call: SetSenderContractAddressCall) {
+  constructor(call: SetRelayerContractAddressCall) {
     this._call = call;
   }
 
@@ -990,10 +1010,10 @@ export class SetSenderContractAddressCall__Inputs {
   }
 }
 
-export class SetSenderContractAddressCall__Outputs {
-  _call: SetSenderContractAddressCall;
+export class SetRelayerContractAddressCall__Outputs {
+  _call: SetRelayerContractAddressCall;
 
-  constructor(call: SetSenderContractAddressCall) {
+  constructor(call: SetRelayerContractAddressCall) {
     this._call = call;
   }
 }

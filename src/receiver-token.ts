@@ -1,57 +1,50 @@
 import {
-  // ReceiverBatchTransfer,
+  ReceiverInitialMint,
   ReceiverBurn,
-  // ReceiverBatchMint,
   ReceiverMint,
   ReceiverTransfer,
-  // ReceiverInitialMint
 } from "../generated/ReceiverToken/ReceiverToken"
 
-import { User, UserTokenBalance, SenderToken } from "../generated/schema"
+import { User, UserTokenBalance, RelayerToken } from "../generated/schema"
 import { BigInt } from "@graphprotocol/graph-ts";
 
-// export function handleReceiverInitialMint(event: ReceiverInitialMint): void {
-//   const userId = event.params.to.toHexString()
-//   const tokenId = event.params.tokenId.toString();
+export function handleReceiverInitialMint(event: ReceiverInitialMint): void {
+  const userId = event.params.to.toHexString()
+  const tokenId = event.params.tokenId.toString();
 
-//   let userTokenBalance = UserTokenBalance.load(`${userId}-${tokenId}`)
-//   // return if does not exist
-//   if (!userTokenBalance) {
-//     return
-//   } else {
-//     userTokenBalance.receiverTokenBalance = event.params.amount;
-//     userTokenBalance.save();
-//   }
-
-//   // let receiverToken = ReceiverToken.load(tokenId)
-//   // if(!receiverToken) {
-//   //   receiverToken = new ReceiverToken(tokenId);
-//   //   receiverToken.save();
-//   // }
-// }
+  let userTokenBalance = UserTokenBalance.load(`${userId}-${tokenId}`)
+  // return if does not exist
+  if (!userTokenBalance) {
+    return
+  } else {
+    userTokenBalance.receiverTokenBalance = event.params.amount;
+    userTokenBalance.save();
+  }
+}
 
 export function handleReceiverMint(event: ReceiverMint): void {
   const userId = event.params.to.toHexString();
   const tokenId = event.params.tokenId.toString();
-  let senderToken = SenderToken.load(tokenId);
+  let relayerToken = RelayerToken.load(tokenId);
   let userTokenBalance = UserTokenBalance.load(`${userId}-${tokenId}`);
 
-  if (!senderToken) {
+  if (!relayerToken) {
     return;
   }
 
-  senderToken.receiverTokenSupply = senderToken.receiverTokenSupply + event.params.amount.toI32();
-  senderToken.save();
+  relayerToken.receiverTokenSupply = relayerToken.receiverTokenSupply + event.params.amount.toI32();
+  relayerToken.save();
 
    // create user token balance entity if does not exist
   if (!userTokenBalance) {
     userTokenBalance = new UserTokenBalance(`${userId}-${tokenId}`);
     userTokenBalance.user = userId;
     userTokenBalance.tokenId = tokenId;
-    userTokenBalance.senderTokenBalance = BigInt.fromI32(0);
+    userTokenBalance.relayerTokenBalance = BigInt.fromI32(0);
     userTokenBalance.receiverTokenBalance = BigInt.fromI32(0);
   }
 
+  // update balance
   userTokenBalance.receiverTokenBalance = userTokenBalance.receiverTokenBalance.plus(event.params.amount);
   userTokenBalance.save();
 
@@ -101,19 +94,19 @@ export function handleReceiverMint(event: ReceiverMint): void {
 export function handleReceiverBurn(event: ReceiverBurn): void {
   const userId = event.params.from.toHexString()
   const tokenId = event.params.tokenId.toString();
-  let senderToken = SenderToken.load(tokenId);
+  let relayerToken = RelayerToken.load(tokenId);
   let userTokenBalance = UserTokenBalance.load(`${userId}-${tokenId}`)
 
-  if(!senderToken || !userTokenBalance){
+  if(!relayerToken || !userTokenBalance){
     return
   }
 
   // update new balance
-  senderToken.receiverTokenSupply = senderToken.receiverTokenSupply - event.params.amount.toI32();
+  relayerToken.receiverTokenSupply = relayerToken.receiverTokenSupply - event.params.amount.toI32();
 
   userTokenBalance.receiverTokenBalance = userTokenBalance.receiverTokenBalance.minus(event.params.amount);
 
-  senderToken.save();
+  relayerToken.save();
   userTokenBalance.save();
 }
 
