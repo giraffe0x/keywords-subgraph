@@ -40,6 +40,74 @@ export class NewMessage__Params {
   }
 }
 
+export class NewRelayedMessage extends ethereum.Event {
+  get params(): NewRelayedMessage__Params {
+    return new NewRelayedMessage__Params(this);
+  }
+}
+
+export class NewRelayedMessage__Params {
+  _event: NewRelayedMessage;
+
+  constructor(event: NewRelayedMessage) {
+    this._event = event;
+  }
+
+  get from(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get srcChainId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+
+  get timestamp(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
+  }
+
+  get message(): string {
+    return this._event.parameters[4].value.toString();
+  }
+}
+
+export class NewRelayedReply extends ethereum.Event {
+  get params(): NewRelayedReply__Params {
+    return new NewRelayedReply__Params(this);
+  }
+}
+
+export class NewRelayedReply__Params {
+  _event: NewRelayedReply;
+
+  constructor(event: NewRelayedReply) {
+    this._event = event;
+  }
+
+  get from(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get srcChainId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get messageId(): string {
+    return this._event.parameters[2].value.toString();
+  }
+
+  get timestamp(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
+  }
+
+  get message(): string {
+    return this._event.parameters[4].value.toString();
+  }
+}
+
 export class NewReply extends ethereum.Event {
   get params(): NewReply__Params {
     return new NewReply__Params(this);
@@ -57,8 +125,8 @@ export class NewReply__Params {
     return this._event.parameters[0].value.toAddress();
   }
 
-  get messageId(): BigInt {
-    return this._event.parameters[1].value.toBigInt();
+  get messageId(): string {
+    return this._event.parameters[1].value.toString();
   }
 
   get timestamp(): BigInt {
@@ -156,8 +224,8 @@ export class ReplyMessageCall__Inputs {
     this._call = call;
   }
 
-  get _messageId(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
+  get _messageId(): string {
+    return this._call.inputValues[0].value.toString();
   }
 
   get _content(): string {
@@ -190,12 +258,12 @@ export class SendMessageCall__Inputs {
     this._call = call;
   }
 
-  get _content(): string {
-    return this._call.inputValues[0].value.toString();
+  get _tokenId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
   }
 
-  get _tokenId(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
+  get _content(): string {
+    return this._call.inputValues[1].value.toString();
   }
 }
 
@@ -203,6 +271,90 @@ export class SendMessageCall__Outputs {
   _call: SendMessageCall;
 
   constructor(call: SendMessageCall) {
+    this._call = call;
+  }
+}
+
+export class SendRelayedMessageCall extends ethereum.Call {
+  get inputs(): SendRelayedMessageCall__Inputs {
+    return new SendRelayedMessageCall__Inputs(this);
+  }
+
+  get outputs(): SendRelayedMessageCall__Outputs {
+    return new SendRelayedMessageCall__Outputs(this);
+  }
+}
+
+export class SendRelayedMessageCall__Inputs {
+  _call: SendRelayedMessageCall;
+
+  constructor(call: SendRelayedMessageCall) {
+    this._call = call;
+  }
+
+  get _from(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get _srcChainId(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
+  get _tokenId(): BigInt {
+    return this._call.inputValues[2].value.toBigInt();
+  }
+
+  get _content(): string {
+    return this._call.inputValues[3].value.toString();
+  }
+}
+
+export class SendRelayedMessageCall__Outputs {
+  _call: SendRelayedMessageCall;
+
+  constructor(call: SendRelayedMessageCall) {
+    this._call = call;
+  }
+}
+
+export class SendRelayedReplyCall extends ethereum.Call {
+  get inputs(): SendRelayedReplyCall__Inputs {
+    return new SendRelayedReplyCall__Inputs(this);
+  }
+
+  get outputs(): SendRelayedReplyCall__Outputs {
+    return new SendRelayedReplyCall__Outputs(this);
+  }
+}
+
+export class SendRelayedReplyCall__Inputs {
+  _call: SendRelayedReplyCall;
+
+  constructor(call: SendRelayedReplyCall) {
+    this._call = call;
+  }
+
+  get _from(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get _srcChainId(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
+  get _messageId(): string {
+    return this._call.inputValues[2].value.toString();
+  }
+
+  get _content(): string {
+    return this._call.inputValues[3].value.toString();
+  }
+}
+
+export class SendRelayedReplyCall__Outputs {
+  _call: SendRelayedReplyCall;
+
+  constructor(call: SendRelayedReplyCall) {
     this._call = call;
   }
 }
@@ -237,6 +389,36 @@ export class SetReceiverContractAddressCall__Outputs {
   }
 }
 
+export class SetRelayerContractAddressCall extends ethereum.Call {
+  get inputs(): SetRelayerContractAddressCall__Inputs {
+    return new SetRelayerContractAddressCall__Inputs(this);
+  }
+
+  get outputs(): SetRelayerContractAddressCall__Outputs {
+    return new SetRelayerContractAddressCall__Outputs(this);
+  }
+}
+
+export class SetRelayerContractAddressCall__Inputs {
+  _call: SetRelayerContractAddressCall;
+
+  constructor(call: SetRelayerContractAddressCall) {
+    this._call = call;
+  }
+
+  get _address(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetRelayerContractAddressCall__Outputs {
+  _call: SetRelayerContractAddressCall;
+
+  constructor(call: SetRelayerContractAddressCall) {
+    this._call = call;
+  }
+}
+
 export class SetReplyMessagePriceCall extends ethereum.Call {
   get inputs(): SetReplyMessagePriceCall__Inputs {
     return new SetReplyMessagePriceCall__Inputs(this);
@@ -263,36 +445,6 @@ export class SetReplyMessagePriceCall__Outputs {
   _call: SetReplyMessagePriceCall;
 
   constructor(call: SetReplyMessagePriceCall) {
-    this._call = call;
-  }
-}
-
-export class SetSenderContractAddressCall extends ethereum.Call {
-  get inputs(): SetSenderContractAddressCall__Inputs {
-    return new SetSenderContractAddressCall__Inputs(this);
-  }
-
-  get outputs(): SetSenderContractAddressCall__Outputs {
-    return new SetSenderContractAddressCall__Outputs(this);
-  }
-}
-
-export class SetSenderContractAddressCall__Inputs {
-  _call: SetSenderContractAddressCall;
-
-  constructor(call: SetSenderContractAddressCall) {
-    this._call = call;
-  }
-
-  get _address(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-}
-
-export class SetSenderContractAddressCall__Outputs {
-  _call: SetSenderContractAddressCall;
-
-  constructor(call: SetSenderContractAddressCall) {
     this._call = call;
   }
 }

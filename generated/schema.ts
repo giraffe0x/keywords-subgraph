@@ -11,7 +11,7 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
-export class SenderToken extends Entity {
+export class RelayerToken extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -19,18 +19,18 @@ export class SenderToken extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save SenderToken entity without an ID");
+    assert(id != null, "Cannot save RelayerToken entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type SenderToken must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type RelayerToken must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("SenderToken", id.toString(), this);
+      store.set("RelayerToken", id.toString(), this);
     }
   }
 
-  static load(id: string): SenderToken | null {
-    return changetype<SenderToken | null>(store.get("SenderToken", id));
+  static load(id: string): RelayerToken | null {
+    return changetype<RelayerToken | null>(store.get("RelayerToken", id));
   }
 
   get id(): string {
@@ -86,22 +86,30 @@ export class SenderToken extends Entity {
     }
   }
 
-  get senderTokenSupply(): i32 {
-    let value = this.get("senderTokenSupply");
-    return value!.toI32();
+  get owner(): string {
+    let value = this.get("owner");
+    return value!.toString();
   }
 
-  set senderTokenSupply(value: i32) {
-    this.set("senderTokenSupply", Value.fromI32(value));
+  set owner(value: string) {
+    this.set("owner", Value.fromString(value));
   }
 
-  get receiverTokenSupply(): i32 {
-    let value = this.get("receiverTokenSupply");
-    return value!.toI32();
+  get officialLink(): string | null {
+    let value = this.get("officialLink");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
   }
 
-  set receiverTokenSupply(value: i32) {
-    this.set("receiverTokenSupply", Value.fromI32(value));
+  set officialLink(value: string | null) {
+    if (!value) {
+      this.unset("officialLink");
+    } else {
+      this.set("officialLink", Value.fromString(<string>value));
+    }
   }
 
   get profilePic(): string | null {
@@ -119,6 +127,24 @@ export class SenderToken extends Entity {
     } else {
       this.set("profilePic", Value.fromString(<string>value));
     }
+  }
+
+  get relayerTokenSupply(): i32 {
+    let value = this.get("relayerTokenSupply");
+    return value!.toI32();
+  }
+
+  set relayerTokenSupply(value: i32) {
+    this.set("relayerTokenSupply", Value.fromI32(value));
+  }
+
+  get receiverTokenSupply(): i32 {
+    let value = this.get("receiverTokenSupply");
+    return value!.toI32();
+  }
+
+  set receiverTokenSupply(value: i32) {
+    this.set("receiverTokenSupply", Value.fromI32(value));
   }
 
   get userTokenBalances(): Array<string> | null {
@@ -296,13 +322,13 @@ export class UserTokenBalance extends Entity {
     this.set("tokenId", Value.fromString(value));
   }
 
-  get senderTokenBalance(): BigInt {
-    let value = this.get("senderTokenBalance");
+  get relayerTokenBalance(): BigInt {
+    let value = this.get("relayerTokenBalance");
     return value!.toBigInt();
   }
 
-  set senderTokenBalance(value: BigInt) {
-    this.set("senderTokenBalance", Value.fromBigInt(value));
+  set relayerTokenBalance(value: BigInt) {
+    this.set("relayerTokenBalance", Value.fromBigInt(value));
   }
 
   get receiverTokenBalance(): BigInt {
@@ -371,6 +397,40 @@ export class Message extends Entity {
 
   set timestamp(value: string) {
     this.set("timestamp", Value.fromString(value));
+  }
+
+  get sourceChain(): string | null {
+    let value = this.get("sourceChain");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set sourceChain(value: string | null) {
+    if (!value) {
+      this.unset("sourceChain");
+    } else {
+      this.set("sourceChain", Value.fromString(<string>value));
+    }
+  }
+
+  get txHash(): string | null {
+    let value = this.get("txHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set txHash(value: string | null) {
+    if (!value) {
+      this.unset("txHash");
+    } else {
+      this.set("txHash", Value.fromString(<string>value));
+    }
   }
 
   get content(): string {
@@ -447,6 +507,40 @@ export class Reply extends Entity {
 
   set timestamp(value: string) {
     this.set("timestamp", Value.fromString(value));
+  }
+
+  get sourceChain(): string | null {
+    let value = this.get("sourceChain");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set sourceChain(value: string | null) {
+    if (!value) {
+      this.unset("sourceChain");
+    } else {
+      this.set("sourceChain", Value.fromString(<string>value));
+    }
+  }
+
+  get txHash(): string | null {
+    let value = this.get("txHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set txHash(value: string | null) {
+    if (!value) {
+      this.unset("txHash");
+    } else {
+      this.set("txHash", Value.fromString(<string>value));
+    }
   }
 
   get content(): string {

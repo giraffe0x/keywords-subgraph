@@ -1,12 +1,29 @@
-type SenderToken @entity {
+type _Schema_
+  @fulltext(
+    name: "tokenSearch",
+    language: en,
+    algorithm: rank,
+    include: [
+      {
+        entity: "RelayerToken",
+        fields: [
+          { name: "keyword"}
+        ]
+      }
+    ]
+  )
+
+type RelayerToken @entity {
   id: ID!
   tokenId: BigInt!
   keyword: String!
   isVerified: Boolean!
   contract: String
-  senderTokenSupply: Int!
-  receiverTokenSupply: Int!
+  owner: String!
+  officialLink: String
   profilePic: String
+  relayerTokenSupply: Int!
+  receiverTokenSupply: Int!
   userTokenBalances: [UserTokenBalance!] @derivedFrom(field: "tokenId")
   messages: [Message!] @derivedFrom(field: "tokenId")
 }
@@ -19,26 +36,30 @@ type User @entity {
 }
 
 type UserTokenBalance @entity {
-  id: ID! # Set to `${user.id}-${senderToken.id}`
+  id: ID! # Set to `${user.id}-${relayerToken.id}`
   user: User!
-  tokenId: SenderToken!
-  senderTokenBalance: BigInt!
+  tokenId: RelayerToken!
+  relayerTokenBalance: BigInt!
   receiverTokenBalance: BigInt!
 }
 
 type Message @entity {
-  id: ID!
+  id: ID! # Set to ${userId}-${tokenId}-${timestamp}
   from: User!
-  tokenId: SenderToken!
+  tokenId: RelayerToken!
   timestamp: String!
+  sourceChain: String
+  txHash: String
   content: String!
   replies: [Reply!] @derivedFrom(field: "belongsTo")
 }
 
 type Reply @entity {
-  id: ID!
+  id: ID! # Set to `${userId}-${messageId}-${timestamp}`
   from: User!
   timestamp: String!
+  sourceChain: String
+  txHash: String
   content: String!
   belongsTo: Message!
 }

@@ -1,80 +1,87 @@
 specVersion: 0.0.4
 schema:
   file: ./schema.graphql
+features:
+  - fullTextSearch
+  - ipfsOnEthereumContracts
 dataSources:
   - kind: ethereum
-    name: SenderToken
-    network: ropsten
+    name: RelayerToken
+    network: arbitrum-rinkeby
     source:
-      address: "0x3159CAa5903361E2e67724A9aFFd48c3c40AF00f"
-      abi: SenderToken
-      startBlock: 12367914
+      address: "0xb2712cd93EF39e5696ae8ba581c3D1992e6E7f8a"
+      abi: RelayerToken
+      startBlock: 13689870
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - SenderToken
+        - RelayerToken
         - User
         - UserTokenBalance
       abis:
-        - name: SenderToken
-          file: ./abis/SenderToken.json
+        - name: RelayerToken
+          file: ./abis/RelayerToken.json
       eventHandlers:
-        # - event: SenderBatchTransfer(indexed address,address,uint256[],uint256[],uint256)
-        #   handler: handleSenderBatchTransfer
-        - event: SenderBurn(indexed address,uint256,uint256,uint256)
-          handler: handleSenderBurn
-        # - event: SenderInitialMint(indexed address,uint256,uint256,uint256,string)
-        #   handler: handleSenderInitialMint
-        - event: SenderInitialVerifiedMint(indexed address,address,uint256,uint256,uint256,string)
-          handler: handleSenderInitialVerifiedMint
-        - event: SenderMint(indexed address,uint256,uint256,uint256)
-          handler: handleSenderMint
-        - event: SenderTransfer(indexed address,address,uint256,uint256,uint256)
-          handler: handleSenderTransfer
-      file: ./src/sender-token.ts
+        - event: RelayerInitialMint(indexed address,uint256,uint256,string,address,uint256)
+          handler: handleRelayerInitialMint
+        - event: RelayerMint(indexed address,uint256,uint256,uint256)
+          handler: handleRelayerMint
+        - event: RelayerBurn(indexed address,uint256,uint256,uint256)
+          handler: handleRelayerBurn
+        - event: UpdateTokenOwner(indexed uint256,address)
+          handler: handleUpdateTokenOwner
+        - event: UpdateTokenProfilePic(indexed uint256,string)
+          handler: handleUpdateTokenProfilePic
+        - event: UpdateTokenLink(indexed uint256,string)
+          handler: handleUpdateTokenLink
+        - event: RelayerTransfer(indexed address,address,uint256,uint256,uint256)
+          handler: handleRelayerTransfer
+        # - event: RelayerBatchTransfer(indexed address,address,uint256[],uint256[],uint256)
+        #   handler: handleRelayerBatchTransfer
+      file: ./src/Relayer-token.ts
   - kind: ethereum
     name: ReceiverToken
-    network: ropsten
+    network: arbitrum-rinkeby
     source:
-      address: "0xE5d54cA63c5EF79ad3313E77E9A9da0b66F32ed0"
+      address: "0x26B37edC44c4d5003c5f286baAaaE67e5a91d1bB"
       abi: ReceiverToken
-      startBlock: 12367938
+      startBlock: 13689886
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - SenderToken
+        - RelayerToken
         - User
         - UserTokenBalance
       abis:
         - name: ReceiverToken
           file: ./abis/ReceiverToken.json
       eventHandlers:
-        - event: ReceiverBurn(indexed address,uint256,uint256,uint256)
-          handler: handleReceiverBurn
-        # - event: ReceiverInitialMint(indexed address,address,uint256,uint256,uint256,string)
-        #   handler: handleReceiverInitialMint
+        - event: ReceiverInitialMint(indexed address,address,uint256,uint256,uint256,string)
+          handler: handleReceiverInitialMint
         - event: ReceiverMint(indexed address,uint256,uint256,uint256)
           handler: handleReceiverMint
+        - event: ReceiverBurn(indexed address,uint256,uint256,uint256)
+          handler: handleReceiverBurn
         - event: ReceiverTransfer(indexed address,address,uint256,uint256,uint256)
           handler: handleReceiverTransfer
       file: ./src/receiver-token.ts
   - kind: ethereum
     name: Messenger
-    network: ropsten
+    network: arbitrum-rinkeby
     source:
-      address: "0x3c3B0Fe25ADA3a0e6f62a38Bc479BC1201446B50"
+      address: "0x81Df0cBb990592395DAB29F17674BB339F3124C7"
       abi: Messenger
-      startBlock: 12369578
+      startBlock: 13689894
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - SenderToken
+        - RelayerToken
         - User
         - UserTokenBalance
         - Message
@@ -85,6 +92,10 @@ dataSources:
       eventHandlers:
         - event: NewMessage(indexed address,uint256,uint256,string)
           handler: handleNewMessage
-        - event: NewReply(indexed address,uint256,uint256,string)
+        - event: NewRelayedMessage(indexed address,uint256,uint256,uint256,string)
+          handler: handleNewRelayedMessage
+        - event: NewReply(indexed address,string,uint256,string)
           handler: handleNewReply
+        - event: NewRelayedReply(indexed address,uint256,string,uint256,string)
+          handler: handleNewRelayedReply
       file: ./src/messenger.ts

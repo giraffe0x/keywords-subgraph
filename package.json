@@ -1,5 +1,5 @@
 {
-  "name": "keywords-sender",
+  "name": "keywords",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
