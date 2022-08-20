@@ -9,9 +9,9 @@ dataSources:
     name: RelayerToken
     network: arbitrum-rinkeby
     source:
-      address: "0xb2712cd93EF39e5696ae8ba581c3D1992e6E7f8a"
+      address: "0xd8d46BB5859D23852278319683dd03719AAa76d5"
       abi: RelayerToken
-      startBlock: 13689870
+      startBlock: 14140788
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -32,10 +32,12 @@ dataSources:
           handler: handleRelayerBurn
         - event: UpdateTokenOwner(indexed uint256,address)
           handler: handleUpdateTokenOwner
-        - event: UpdateTokenProfilePic(indexed uint256,string)
-          handler: handleUpdateTokenProfilePic
-        - event: UpdateTokenLink(indexed uint256,string)
-          handler: handleUpdateTokenLink
+        - event: UpdateTokenAvatar(indexed uint256,string)
+          handler: handleUpdateTokenAvatar
+        - event: UpdateTokenUrl(indexed uint256,string)
+          handler: handleUpdateTokenUrl
+        - event: UpdateTokenDescription(indexed uint256,string)
+          handler: handleUpdateTokenDescription
         - event: RelayerTransfer(indexed address,address,uint256,uint256,uint256)
           handler: handleRelayerTransfer
         # - event: RelayerBatchTransfer(indexed address,address,uint256[],uint256[],uint256)

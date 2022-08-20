@@ -314,16 +314,16 @@ export class URI__Params {
   }
 }
 
-export class UpdateTokenLink extends ethereum.Event {
-  get params(): UpdateTokenLink__Params {
-    return new UpdateTokenLink__Params(this);
+export class UpdateTokenAvatar extends ethereum.Event {
+  get params(): UpdateTokenAvatar__Params {
+    return new UpdateTokenAvatar__Params(this);
   }
 }
 
-export class UpdateTokenLink__Params {
-  _event: UpdateTokenLink;
+export class UpdateTokenAvatar__Params {
+  _event: UpdateTokenAvatar;
 
-  constructor(event: UpdateTokenLink) {
+  constructor(event: UpdateTokenAvatar) {
     this._event = event;
   }
 
@@ -331,7 +331,29 @@ export class UpdateTokenLink__Params {
     return this._event.parameters[0].value.toBigInt();
   }
 
-  get officialLink(): string {
+  get avatar(): string {
+    return this._event.parameters[1].value.toString();
+  }
+}
+
+export class UpdateTokenDescription extends ethereum.Event {
+  get params(): UpdateTokenDescription__Params {
+    return new UpdateTokenDescription__Params(this);
+  }
+}
+
+export class UpdateTokenDescription__Params {
+  _event: UpdateTokenDescription;
+
+  constructor(event: UpdateTokenDescription) {
+    this._event = event;
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get desc(): string {
     return this._event.parameters[1].value.toString();
   }
 }
@@ -358,16 +380,16 @@ export class UpdateTokenOwner__Params {
   }
 }
 
-export class UpdateTokenProfilePic extends ethereum.Event {
-  get params(): UpdateTokenProfilePic__Params {
-    return new UpdateTokenProfilePic__Params(this);
+export class UpdateTokenUrl extends ethereum.Event {
+  get params(): UpdateTokenUrl__Params {
+    return new UpdateTokenUrl__Params(this);
   }
 }
 
-export class UpdateTokenProfilePic__Params {
-  _event: UpdateTokenProfilePic;
+export class UpdateTokenUrl__Params {
+  _event: UpdateTokenUrl;
 
-  constructor(event: UpdateTokenProfilePic) {
+  constructor(event: UpdateTokenUrl) {
     this._event = event;
   }
 
@@ -375,7 +397,7 @@ export class UpdateTokenProfilePic__Params {
     return this._event.parameters[0].value.toBigInt();
   }
 
-  get profilePic(): string {
+  get url(): string {
     return this._event.parameters[1].value.toString();
   }
 }
@@ -387,6 +409,7 @@ export class RelayerToken__tokensResult {
   value3: Address;
   value4: string;
   value5: string;
+  value6: string;
 
   constructor(
     value0: BigInt,
@@ -394,7 +417,8 @@ export class RelayerToken__tokensResult {
     value2: Address,
     value3: Address,
     value4: string,
-    value5: string
+    value5: string,
+    value6: string
   ) {
     this.value0 = value0;
     this.value1 = value1;
@@ -402,6 +426,7 @@ export class RelayerToken__tokensResult {
     this.value3 = value3;
     this.value4 = value4;
     this.value5 = value5;
+    this.value6 = value6;
   }
 
   toMap(): TypedMap<string, ethereum.Value> {
@@ -412,6 +437,7 @@ export class RelayerToken__tokensResult {
     map.set("value3", ethereum.Value.fromAddress(this.value3));
     map.set("value4", ethereum.Value.fromString(this.value4));
     map.set("value5", ethereum.Value.fromString(this.value5));
+    map.set("value6", ethereum.Value.fromString(this.value6));
     return map;
   }
 
@@ -427,16 +453,20 @@ export class RelayerToken__tokensResult {
     return this.value2;
   }
 
-  get_verifiedOwner(): Address {
+  get_owner(): Address {
     return this.value3;
   }
 
-  get_profilePic(): string {
+  get_avatar(): string {
     return this.value4;
   }
 
-  get_officialLink(): string {
+  get_url(): string {
     return this.value5;
+  }
+
+  get_description(): string {
+    return this.value6;
   }
 }
 
@@ -647,7 +677,7 @@ export class RelayerToken extends ethereum.SmartContract {
   tokens(param0: BigInt): RelayerToken__tokensResult {
     let result = super.call(
       "tokens",
-      "tokens(uint256):(uint256,string,address,address,string,string)",
+      "tokens(uint256):(uint256,string,address,address,string,string,string)",
       [ethereum.Value.fromUnsignedBigInt(param0)]
     );
 
@@ -657,14 +687,15 @@ export class RelayerToken extends ethereum.SmartContract {
       result[2].toAddress(),
       result[3].toAddress(),
       result[4].toString(),
-      result[5].toString()
+      result[5].toString(),
+      result[6].toString()
     );
   }
 
   try_tokens(param0: BigInt): ethereum.CallResult<RelayerToken__tokensResult> {
     let result = super.tryCall(
       "tokens",
-      "tokens(uint256):(uint256,string,address,address,string,string)",
+      "tokens(uint256):(uint256,string,address,address,string,string,string)",
       [ethereum.Value.fromUnsignedBigInt(param0)]
     );
     if (result.reverted) {
@@ -678,7 +709,8 @@ export class RelayerToken extends ethereum.SmartContract {
         value[2].toAddress(),
         value[3].toAddress(),
         value[4].toString(),
-        value[5].toString()
+        value[5].toString(),
+        value[6].toString()
       )
     );
   }
@@ -779,6 +811,32 @@ export class BurnCall__Outputs {
   }
 }
 
+export class IndividualInitialMintCall extends ethereum.Call {
+  get inputs(): IndividualInitialMintCall__Inputs {
+    return new IndividualInitialMintCall__Inputs(this);
+  }
+
+  get outputs(): IndividualInitialMintCall__Outputs {
+    return new IndividualInitialMintCall__Outputs(this);
+  }
+}
+
+export class IndividualInitialMintCall__Inputs {
+  _call: IndividualInitialMintCall;
+
+  constructor(call: IndividualInitialMintCall) {
+    this._call = call;
+  }
+}
+
+export class IndividualInitialMintCall__Outputs {
+  _call: IndividualInitialMintCall;
+
+  constructor(call: IndividualInitialMintCall) {
+    this._call = call;
+  }
+}
+
 export class InitialMintCall extends ethereum.Call {
   get inputs(): InitialMintCall__Inputs {
     return new InitialMintCall__Inputs(this);
@@ -817,20 +875,20 @@ export class InitialMintCall__Outputs {
   }
 }
 
-export class MintRelayerCall extends ethereum.Call {
-  get inputs(): MintRelayerCall__Inputs {
-    return new MintRelayerCall__Inputs(this);
+export class MintMoreRelayerCall extends ethereum.Call {
+  get inputs(): MintMoreRelayerCall__Inputs {
+    return new MintMoreRelayerCall__Inputs(this);
   }
 
-  get outputs(): MintRelayerCall__Outputs {
-    return new MintRelayerCall__Outputs(this);
+  get outputs(): MintMoreRelayerCall__Outputs {
+    return new MintMoreRelayerCall__Outputs(this);
   }
 }
 
-export class MintRelayerCall__Inputs {
-  _call: MintRelayerCall;
+export class MintMoreRelayerCall__Inputs {
+  _call: MintMoreRelayerCall;
 
-  constructor(call: MintRelayerCall) {
+  constructor(call: MintMoreRelayerCall) {
     this._call = call;
   }
 
@@ -843,82 +901,10 @@ export class MintRelayerCall__Inputs {
   }
 }
 
-export class MintRelayerCall__Outputs {
-  _call: MintRelayerCall;
+export class MintMoreRelayerCall__Outputs {
+  _call: MintMoreRelayerCall;
 
-  constructor(call: MintRelayerCall) {
-    this._call = call;
-  }
-}
-
-export class OwnerInitialMintCall extends ethereum.Call {
-  get inputs(): OwnerInitialMintCall__Inputs {
-    return new OwnerInitialMintCall__Inputs(this);
-  }
-
-  get outputs(): OwnerInitialMintCall__Outputs {
-    return new OwnerInitialMintCall__Outputs(this);
-  }
-}
-
-export class OwnerInitialMintCall__Inputs {
-  _call: OwnerInitialMintCall;
-
-  constructor(call: OwnerInitialMintCall) {
-    this._call = call;
-  }
-
-  get _contract(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get _keyword(): string {
-    return this._call.inputValues[1].value.toString();
-  }
-
-  get _amount(): BigInt {
-    return this._call.inputValues[2].value.toBigInt();
-  }
-}
-
-export class OwnerInitialMintCall__Outputs {
-  _call: OwnerInitialMintCall;
-
-  constructor(call: OwnerInitialMintCall) {
-    this._call = call;
-  }
-}
-
-export class OwnerMintCall extends ethereum.Call {
-  get inputs(): OwnerMintCall__Inputs {
-    return new OwnerMintCall__Inputs(this);
-  }
-
-  get outputs(): OwnerMintCall__Outputs {
-    return new OwnerMintCall__Outputs(this);
-  }
-}
-
-export class OwnerMintCall__Inputs {
-  _call: OwnerMintCall;
-
-  constructor(call: OwnerMintCall) {
-    this._call = call;
-  }
-
-  get _tokenId(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-
-  get _amount(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
-  }
-}
-
-export class OwnerMintCall__Outputs {
-  _call: OwnerMintCall;
-
-  constructor(call: OwnerMintCall) {
+  constructor(call: MintMoreRelayerCall) {
     this._call = call;
   }
 }
@@ -1135,20 +1121,20 @@ export class TransferOwnershipCall__Outputs {
   }
 }
 
-export class UpdateTokenLinkCall extends ethereum.Call {
-  get inputs(): UpdateTokenLinkCall__Inputs {
-    return new UpdateTokenLinkCall__Inputs(this);
+export class UpdateTokenAvatarCall extends ethereum.Call {
+  get inputs(): UpdateTokenAvatarCall__Inputs {
+    return new UpdateTokenAvatarCall__Inputs(this);
   }
 
-  get outputs(): UpdateTokenLinkCall__Outputs {
-    return new UpdateTokenLinkCall__Outputs(this);
+  get outputs(): UpdateTokenAvatarCall__Outputs {
+    return new UpdateTokenAvatarCall__Outputs(this);
   }
 }
 
-export class UpdateTokenLinkCall__Inputs {
-  _call: UpdateTokenLinkCall;
+export class UpdateTokenAvatarCall__Inputs {
+  _call: UpdateTokenAvatarCall;
 
-  constructor(call: UpdateTokenLinkCall) {
+  constructor(call: UpdateTokenAvatarCall) {
     this._call = call;
   }
 
@@ -1156,15 +1142,49 @@ export class UpdateTokenLinkCall__Inputs {
     return this._call.inputValues[0].value.toBigInt();
   }
 
-  get _officialLink(): string {
+  get _avatar(): string {
     return this._call.inputValues[1].value.toString();
   }
 }
 
-export class UpdateTokenLinkCall__Outputs {
-  _call: UpdateTokenLinkCall;
+export class UpdateTokenAvatarCall__Outputs {
+  _call: UpdateTokenAvatarCall;
 
-  constructor(call: UpdateTokenLinkCall) {
+  constructor(call: UpdateTokenAvatarCall) {
+    this._call = call;
+  }
+}
+
+export class UpdateTokenDescriptionCall extends ethereum.Call {
+  get inputs(): UpdateTokenDescriptionCall__Inputs {
+    return new UpdateTokenDescriptionCall__Inputs(this);
+  }
+
+  get outputs(): UpdateTokenDescriptionCall__Outputs {
+    return new UpdateTokenDescriptionCall__Outputs(this);
+  }
+}
+
+export class UpdateTokenDescriptionCall__Inputs {
+  _call: UpdateTokenDescriptionCall;
+
+  constructor(call: UpdateTokenDescriptionCall) {
+    this._call = call;
+  }
+
+  get _tokenId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get _desc(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+}
+
+export class UpdateTokenDescriptionCall__Outputs {
+  _call: UpdateTokenDescriptionCall;
+
+  constructor(call: UpdateTokenDescriptionCall) {
     this._call = call;
   }
 }
@@ -1203,20 +1223,20 @@ export class UpdateTokenOwnerCall__Outputs {
   }
 }
 
-export class UpdateTokenProfilePicCall extends ethereum.Call {
-  get inputs(): UpdateTokenProfilePicCall__Inputs {
-    return new UpdateTokenProfilePicCall__Inputs(this);
+export class UpdateTokenUrlCall extends ethereum.Call {
+  get inputs(): UpdateTokenUrlCall__Inputs {
+    return new UpdateTokenUrlCall__Inputs(this);
   }
 
-  get outputs(): UpdateTokenProfilePicCall__Outputs {
-    return new UpdateTokenProfilePicCall__Outputs(this);
+  get outputs(): UpdateTokenUrlCall__Outputs {
+    return new UpdateTokenUrlCall__Outputs(this);
   }
 }
 
-export class UpdateTokenProfilePicCall__Inputs {
-  _call: UpdateTokenProfilePicCall;
+export class UpdateTokenUrlCall__Inputs {
+  _call: UpdateTokenUrlCall;
 
-  constructor(call: UpdateTokenProfilePicCall) {
+  constructor(call: UpdateTokenUrlCall) {
     this._call = call;
   }
 
@@ -1224,15 +1244,15 @@ export class UpdateTokenProfilePicCall__Inputs {
     return this._call.inputValues[0].value.toBigInt();
   }
 
-  get _profilePic(): string {
+  get _url(): string {
     return this._call.inputValues[1].value.toString();
   }
 }
 
-export class UpdateTokenProfilePicCall__Outputs {
-  _call: UpdateTokenProfilePicCall;
+export class UpdateTokenUrlCall__Outputs {
+  _call: UpdateTokenUrlCall;
 
-  constructor(call: UpdateTokenProfilePicCall) {
+  constructor(call: UpdateTokenUrlCall) {
     this._call = call;
   }
 }

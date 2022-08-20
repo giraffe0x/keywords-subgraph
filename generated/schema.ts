@@ -95,8 +95,8 @@ export class RelayerToken extends Entity {
     this.set("owner", Value.fromString(value));
   }
 
-  get officialLink(): string | null {
-    let value = this.get("officialLink");
+  get avatar(): string | null {
+    let value = this.get("avatar");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -104,16 +104,16 @@ export class RelayerToken extends Entity {
     }
   }
 
-  set officialLink(value: string | null) {
+  set avatar(value: string | null) {
     if (!value) {
-      this.unset("officialLink");
+      this.unset("avatar");
     } else {
-      this.set("officialLink", Value.fromString(<string>value));
+      this.set("avatar", Value.fromString(<string>value));
     }
   }
 
-  get profilePic(): string | null {
-    let value = this.get("profilePic");
+  get url(): string | null {
+    let value = this.get("url");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -121,11 +121,28 @@ export class RelayerToken extends Entity {
     }
   }
 
-  set profilePic(value: string | null) {
+  set url(value: string | null) {
     if (!value) {
-      this.unset("profilePic");
+      this.unset("url");
     } else {
-      this.set("profilePic", Value.fromString(<string>value));
+      this.set("url", Value.fromString(<string>value));
+    }
+  }
+
+  get description(): string | null {
+    let value = this.get("description");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set description(value: string | null) {
+    if (!value) {
+      this.unset("description");
+    } else {
+      this.set("description", Value.fromString(<string>value));
     }
   }
 

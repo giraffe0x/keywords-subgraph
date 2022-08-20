@@ -20,8 +20,9 @@ type RelayerToken @entity {
   isVerified: Boolean!
   contract: String
   owner: String!
-  officialLink: String
-  profilePic: String
+  avatar: String
+  url: String
+  description: String
   relayerTokenSupply: Int!
   receiverTokenSupply: Int!
   userTokenBalances: [UserTokenBalance!] @derivedFrom(field: "tokenId")

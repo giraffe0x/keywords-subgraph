@@ -3,8 +3,9 @@ import {
   RelayerMint,
   RelayerBurn,
   UpdateTokenOwner,
-  UpdateTokenProfilePic,
-  UpdateTokenLink,
+  UpdateTokenAvatar,
+  UpdateTokenUrl,
+  UpdateTokenDescription,
   RelayerTransfer
 } from "../generated/RelayerToken/RelayerToken"
 
@@ -14,6 +15,7 @@ import { BigInt } from "@graphprotocol/graph-ts";
 export function handleRelayerInitialMint(event: RelayerInitialMint): void {
   const userId = event.params.to.toHexString()
   const tokenId = event.params.tokenId.toString();
+  const keyword = event.params.keyword;
 
   const userTokenBalance = new UserTokenBalance(`${userId}-${tokenId}`);
   userTokenBalance.user = userId;
@@ -92,7 +94,7 @@ export function handleUpdateTokenOwner(event: UpdateTokenOwner): void {
   relayerToken.save();
 }
 
-export function handleUpdateTokenProfilePic(event: UpdateTokenProfilePic): void {
+export function handleUpdateTokenAvatar(event: UpdateTokenAvatar): void {
   const tokenId = event.params.tokenId.toString();
   let relayerToken = RelayerToken.load(tokenId)
 
@@ -100,20 +102,33 @@ export function handleUpdateTokenProfilePic(event: UpdateTokenProfilePic): void 
     return
   }
   // update new pp
-  relayerToken.profilePic = event.params.profilePic;
+  relayerToken.avatar = event.params.avatar;
 
   relayerToken.save();
 }
 
-export function handleUpdateTokenLink(event: UpdateTokenLink): void {
+export function handleUpdateTokenUrl(event: UpdateTokenUrl): void {
   const tokenId = event.params.tokenId.toString();
   let relayerToken = RelayerToken.load(tokenId)
 
   if(!relayerToken){
     return
   }
-  // update new official link
-  relayerToken.officialLink = event.params.officialLink;
+  // update new url
+  relayerToken.url = event.params.url;
+
+  relayerToken.save();
+}
+
+export function handleUpdateTokenDescription(event: UpdateTokenDescription): void {
+  const tokenId = event.params.tokenId.toString();
+  let relayerToken = RelayerToken.load(tokenId)
+
+  if(!relayerToken){
+    return
+  }
+  // update new description
+  relayerToken.description = event.params.desc;
 
   relayerToken.save();
 }
@@ -138,6 +153,7 @@ export function handleRelayerTransfer(event: RelayerTransfer): void {
     userToTokenBalance.user = userToId;
     userToTokenBalance.tokenId = tokenId;
     userToTokenBalance.relayerTokenBalance = event.params.amount;
+    userToTokenBalance.receiverTokenBalance = BigInt.fromI32(0);
   } else {
     // increase receiver balance
     userToTokenBalance.relayerTokenBalance = userToTokenBalance.relayerTokenBalance.plus(event.params.amount);

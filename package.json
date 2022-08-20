@@ -1,13 +1,13 @@
 {
-  "name": "keywords",
+  "name": "relayer-protocol",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ chewonithard/keywords",
-    "create-local": "graph create --node http://localhost:8020/ chewonithard/keywords",
-    "remove-local": "graph remove --node http://localhost:8020/ chewonithard/keywords",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 chewonithard/keywords"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ chewonithard/relayer-protocol",
+    "create-local": "graph create --node http://localhost:8020/ chewonithard/relayer",
+    "remove-local": "graph remove --node http://localhost:8020/ chewonithard/relayer",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 chewonithard/relayer"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.30.4",
